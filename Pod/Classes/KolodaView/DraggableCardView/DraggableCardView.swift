@@ -34,7 +34,7 @@ protocol DraggableCardDelegate: class {
 //Drag animation constants
 private let defaultRotationMax: CGFloat = 1.0
 private let defaultRotationAngle = CGFloat(Double.pi) / 10.0
-private let defaultScaleMin: CGFloat = 0.8
+private let defaultScaleMin: CGFloat = 0.95
 
 private let screenSize = UIScreen.main.bounds.size
 
@@ -241,15 +241,12 @@ public class DraggableCardView: UIView, UIGestureRecognizerDelegate {
             delegate?.card(cardPanBegan: self)
             
         case .changed:
-            let rotationStrength = min(dragDistance.x / frame.width, rotationMax)
-            let rotationAngle = animationDirectionY * self.rotationAngle * rotationStrength
-            let scaleStrength = 1 - ((1 - scaleMin) * abs(rotationStrength))
+            let scaleStrength = 1 - ((1 - scaleMin) * abs(scaleMin))
             let scale = max(scaleStrength, scaleMin)
 
             var transform = CATransform3DIdentity
             transform = CATransform3DScale(transform, scale, scale, 1)
-            transform = CATransform3DRotate(transform, rotationAngle, 0, 0, 1)
-            transform = CATransform3DTranslate(transform, dragDistance.x, dragDistance.y, 0)
+            transform = CATransform3DTranslate(transform, dragDistance.x, 0, 0)
             layer.transform = transform
             
             let percentage = dragPercentage
